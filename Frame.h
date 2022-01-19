@@ -44,14 +44,14 @@ public:
 	void SetGameFrameHeight(const short height);
 
 	// return size of frame;
-	Size GetFrameSize(void);
+	Size GetFrameSize(void) const;
 
 	// Draw game frame in the console;
 	//
 	// startCoord - where you want to draw this frame;
-	void DrawFrame(const COORD& startCoord);
+	void DrawFrame(const COORD& startCoord) const;
 	// Draw game frame in the console;
 	//
 	// coordX && coordY - where you want to draw this frame;
-	void DrawFrame(const short coordX, const short coordY);
+	void DrawFrame(const short coordX, const short coordY) const;
 };

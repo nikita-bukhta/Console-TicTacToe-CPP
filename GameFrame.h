@@ -19,10 +19,12 @@ public:
 
 	// return count of cells in each row;
 	//	but count of cells only of 1 row;
-	short GetCellsCountInRow(void);
+	short GetCellsCountInRow(void) const;
 	// return count of cells in each column;
 	//	but count of cells only of 1 row;
-	short GetCellsCountInColumn(void);
+	short GetCellsCountInColumn(void) const;
+
+	Size GetCellSize(void) const; 
 
 };
 

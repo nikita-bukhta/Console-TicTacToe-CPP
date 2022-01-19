@@ -85,7 +85,7 @@ GameFrame::GameFrame(Size gameFrameSize, Size cellSize) :  Frame(gameFrameSize)
 	MakeGameFrame();
 }
 
-short GameFrame::GetCellsCountInRow(void)
+short GameFrame::GetCellsCountInRow(void) const
 {
 	// check if all cells has their size;
 	// 
@@ -98,7 +98,7 @@ short GameFrame::GetCellsCountInRow(void)
 		return (_frameSize.width - 1) / (_cellSize.width + 1);
 }
 
-short GameFrame::GetCellsCountInColumn(void)
+short GameFrame::GetCellsCountInColumn(void) const
 {
 	// check if all cells has their size;
 	// 
@@ -109,4 +109,9 @@ short GameFrame::GetCellsCountInColumn(void)
 		return (_frameSize.height - 1) / (_cellSize.height + 1) + 1;
 	else
 		return (_frameSize.height - 1) / (_cellSize.height + 1);
+}
+
+Size GameFrame::GetCellSize(void) const
+{
+	return _cellSize;
 }

@@ -140,12 +140,12 @@ void Frame::SetGameFrameHeight(const short height)
 	MakeGameFrame();
 }
 
-Size Frame::GetFrameSize(void)
+Size Frame::GetFrameSize(void) const
 {
 	return _frameSize;
 }
 
-void Frame::DrawFrame(const COORD& startCoord)
+void Frame::DrawFrame(const COORD& startCoord) const
 {
 	Console::SetCursorPosition(startCoord);
 	for (short row = 0; row < _frameSize.height; ++row)
@@ -153,12 +153,12 @@ void Frame::DrawFrame(const COORD& startCoord)
 		for (short column = 0; column < _frameSize.width; ++column)
 		{
 			Console::SetCursorPosition(startCoord.X + column, startCoord.Y + row);
-			std::cout << char(_frame[row][column]);
+			std::cout << unsigned char(_frame[row][column]);
 		}
 	}
 }
 
-void Frame::DrawFrame(const short coordX, const short coordY)
+void Frame::DrawFrame(const short coordX, const short coordY) const
 {
 	DrawFrame(COORD{ coordX, coordY });
 }

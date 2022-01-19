@@ -142,7 +142,9 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="GameFrame.cpp" />
+    <ClCompile Include="Letter.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TicTacToe.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +152,8 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="GameFrame.h" />
+    <ClInclude Include="Letter.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TicTacToe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

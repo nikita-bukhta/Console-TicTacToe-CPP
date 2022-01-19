@@ -2,10 +2,36 @@
 
 #include <Windows.h>
 
+// TODO:
+//	1) Make realization of struct size in CPP file;
+//
+
 struct Size
 {
-	int width;
-	int height;
+	short width;
+	short height;
+
+	Size operator + (const short value)
+	{
+		Size result =
+		{
+			this->width + value,
+			this->height + value
+		};
+
+		return result;
+	}
+
+	Size operator + (const Size& other)
+	{
+		Size result =
+		{
+			this->width + other.width,
+			this->height + other.height
+		};
+
+		return result;
+	}
 
 	Size operator - (const Size& other)
 	{
