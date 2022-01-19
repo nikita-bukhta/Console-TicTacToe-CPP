@@ -6,6 +6,7 @@
 
 #include <Windows.h>
 #include <ostream>
+#include <cstring>
 
 class Console
 {

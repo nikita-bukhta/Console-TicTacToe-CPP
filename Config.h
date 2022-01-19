@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 struct Size
 {
 	int width;
@@ -23,6 +25,18 @@ struct Size
 		};
 
 		return result;
+	}
+
+	bool operator == (const Size& other)
+	{
+		return this->width == other.width &&
+			this->height == other.height;
+	}
+
+	bool operator != (const Size& other)
+	{
+		return this->width != other.width ||
+			this->height != other.height;
 	}
 };
 

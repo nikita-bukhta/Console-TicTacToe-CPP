@@ -1,6 +1,7 @@
 #include "Console.h"
 
 #include <string>
+#include <iostream>
 
 // static variables;
 const HANDLE Console::_handleOut = GetStdHandle(STD_OUTPUT_HANDLE);
