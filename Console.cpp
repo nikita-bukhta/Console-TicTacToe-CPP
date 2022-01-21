@@ -16,32 +16,32 @@ COORD Console::_currentCursorCoord = COORD();
 Size Console::_consoleSize = Size();
 
 #pragma region Keybord Keys
-const Letter Console::Keyboard::A('A', 'Ô');
-const Letter Console::Keyboard::B('B', 'È');
-const Letter Console::Keyboard::C('C', 'Ñ');
-const Letter Console::Keyboard::D('D', 'Â');
-const Letter Console::Keyboard::E('E', 'Ó');
-const Letter Console::Keyboard::F('F', 'À');
-const Letter Console::Keyboard::G('G', 'Ï');
-const Letter Console::Keyboard::H('H', 'Ğ');
-const Letter Console::Keyboard::I('I', 'Ø');
-const Letter Console::Keyboard::J('J', 'Î');
-const Letter Console::Keyboard::K('K', 'Ë');
-const Letter Console::Keyboard::L('L', 'Ä');
-const Letter Console::Keyboard::M('M', 'Ü');
-const Letter Console::Keyboard::N('N', 'Ò');
-const Letter Console::Keyboard::O('O', 'Ù');
-const Letter Console::Keyboard::P('P', 'Ç');
-const Letter Console::Keyboard::Q('Q', 'É');
-const Letter Console::Keyboard::R('R', 'Ê');
-const Letter Console::Keyboard::S('S', 'Û');
-const Letter Console::Keyboard::T('T', 'Å');
-const Letter Console::Keyboard::U('U', 'Ã');
-const Letter Console::Keyboard::V('V', 'Ì');
-const Letter Console::Keyboard::W('W', 'Ö');
-const Letter Console::Keyboard::X('X', '×');
-const Letter Console::Keyboard::Y('Y', 'Í');
-const Letter Console::Keyboard::Z('Z', 'ß');
+const Letter Console::Keyboard::A(L'A', L'Ô');
+const Letter Console::Keyboard::B(L'B', L'È');
+const Letter Console::Keyboard::C(L'C', L'Ñ');
+const Letter Console::Keyboard::D(L'D', L'Â');
+const Letter Console::Keyboard::E(L'E', L'Ó');
+const Letter Console::Keyboard::F(L'F', L'À');
+const Letter Console::Keyboard::G(L'G', L'Ï');
+const Letter Console::Keyboard::H(L'H', L'Ğ');
+const Letter Console::Keyboard::I(L'I', L'Ø');
+const Letter Console::Keyboard::J(L'J', L'Î');
+const Letter Console::Keyboard::K(L'K', L'Ë');
+const Letter Console::Keyboard::L(L'L', L'Ä');
+const Letter Console::Keyboard::M(L'M', L'Ü');
+const Letter Console::Keyboard::N(L'N', L'Ò');
+const Letter Console::Keyboard::O(L'O', L'Ù');
+const Letter Console::Keyboard::P(L'P', L'Ç');
+const Letter Console::Keyboard::Q(L'Q', L'É');
+const Letter Console::Keyboard::R(L'R', L'Ê');
+const Letter Console::Keyboard::S(L'S', L'Û');
+const Letter Console::Keyboard::T(L'T', L'Å');
+const Letter Console::Keyboard::U(L'U', L'Ã');
+const Letter Console::Keyboard::V(L'V', L'Ì');
+const Letter Console::Keyboard::W(L'W', L'Ö');
+const Letter Console::Keyboard::X(L'X', L'×');
+const Letter Console::Keyboard::Y(L'Y', L'Í');
+const Letter Console::Keyboard::Z(L'Z', L'ß');
 const Letter Console::Keyboard::ARROW_UP(72);
 const Letter Console::Keyboard::ARROW_LEFT(75);
 const Letter Console::Keyboard::ARROW_RIGHT(77);
@@ -101,44 +101,36 @@ void Console::ClearConsole(void)
 	std::system("cls");
 }
 
-unsigned char Console::ToLowerCase(unsigned char character)
+wchar_t Console::ToLowerCase(wchar_t character)
 {
-	if (isupper(unsigned char(character))) // ASCII
-		character = tolower(character);
-	else if (character > 127 && character < 144)
+	if (L'À' <= character && character <= L'ß')
 		character += 32;
-	else if (character > 143 && character < 160)	
-		character += 80;
-	else if (character == 240)
-		character += 1;
+	else if (towupper(character))
+		character = towlower(character);
 
 	return character;
 }
 
-unsigned char Console::ToUpperCase(unsigned char character)
+wchar_t Console::ToUpperCase(wchar_t character)
 {
-	if (character > 159 && character < 176)
+	if (L'à' <= character && character <= L'ÿ')
 		character -= 32;
-	else if (character > 223 && character < 240)
-		character -= 80;
-	else if (character == 241)
-		character -= 1;
-	else if (islower(unsigned char(character))) // ASCII
-		character = toupper(character);
+	else if (iswlower(character))
+		character = towupper(character);
 
 	return character;
 }
 
-unsigned char Console::GetPressedKey(void)
+wchar_t Console::GetPressedKey(void)
 {
-	unsigned char pressedKey = _getch();
+	wchar_t pressedKey = _getwch();
 	// if this key is arrow;
 	if (pressedKey == 224)
 	{
-		pressedKey = _getch();
+		pressedKey = _getwch();
 		return pressedKey;
 	}
 	else
-		return ToUpperCase(pressedKey);
+		return pressedKey;
 }
 

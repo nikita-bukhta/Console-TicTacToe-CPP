@@ -23,7 +23,7 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 
 	while (true)
 	{
-		unsigned char pressedKey = Console::GetPressedKey(); // pressed key
+		wchar_t pressedKey = Console::ToUpperCase(Console::GetPressedKey()); // pressed key
 		if (pressedKey == 0)
 			continue;
 		// move RIGHT;

@@ -12,35 +12,35 @@
 class Console
 {
 public:
-	class Keyboard
+	class Keyboard	// Bind in upper case;
 	{
 	public:
-		static const Letter A;
-		static const Letter B;
-		static const Letter C;
-		static const Letter D;
-		static const Letter E;
-		static const Letter F;
-		static const Letter G;
-		static const Letter H;
-		static const Letter I;
-		static const Letter J;
-		static const Letter K;
-		static const Letter L;
-		static const Letter M;
-		static const Letter N;
-		static const Letter O;
-		static const Letter P;
-		static const Letter Q;
-		static const Letter R;
-		static const Letter S;
-		static const Letter T;
-		static const Letter U;
-		static const Letter V;
-		static const Letter W;
-		static const Letter X;
-		static const Letter Y;
-		static const Letter Z;
+		static const Letter A;	// Bind in upper case;
+		static const Letter B;	// Bind in upper case;
+		static const Letter C;	// Bind in upper case;
+		static const Letter D;	// Bind in upper case;
+		static const Letter E;	// Bind in upper case;
+		static const Letter F;	// Bind in upper case;
+		static const Letter G;	// Bind in upper case;
+		static const Letter H;	// Bind in upper case;
+		static const Letter I;	// Bind in upper case;
+		static const Letter J;	// Bind in upper case;
+		static const Letter K;	// Bind in upper case;
+		static const Letter L;	// Bind in upper case;
+		static const Letter M;	// Bind in upper case;
+		static const Letter N;	// Bind in upper case;
+		static const Letter O;	// Bind in upper case;
+		static const Letter P;	// Bind in upper case;
+		static const Letter Q;	// Bind in upper case;
+		static const Letter R;	// Bind in upper case;
+		static const Letter S;	// Bind in upper case;
+		static const Letter T;	// Bind in upper case;
+		static const Letter U;	// Bind in upper case;
+		static const Letter V;	// Bind in upper case;
+		static const Letter W;	// Bind in upper case;
+		static const Letter X;	// Bind in upper case;
+		static const Letter Y;	// Bind in upper case;
+		static const Letter Z;	// Bind in upper case;
 		static const Letter ARROW_UP;
 		static const Letter ARROW_LEFT;
 		static const Letter ARROW_RIGHT;
@@ -75,13 +75,13 @@ public:
 	static void ClearConsole(void);
 
 	// Convert character to lower case;
-	static unsigned char ToLowerCase(unsigned char character);
+	static wchar_t ToLowerCase(wchar_t character);
 
 	// Convert character to upper case;
-	static unsigned char ToUpperCase(unsigned char character);
+	static wchar_t ToUpperCase(wchar_t character);
 
 	// return key you pressed key;
-	static unsigned char GetPressedKey(void);
+	static wchar_t GetPressedKey(void);
 };
 
 #endif CONSOLE_H

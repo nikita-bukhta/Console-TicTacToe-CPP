@@ -6,12 +6,12 @@
 class Letter
 {
 private:
-	std::vector<unsigned char> _possibleUnicode;
+	std::vector<wchar_t> _possibleUnicode;
 
 public:
-	Letter(const unsigned char firstCode);
-	Letter(const unsigned char firstCode, const unsigned char secondCode);
+	Letter(const wchar_t firstCode);
+	Letter(const wchar_t firstCode, const wchar_t secondCode);
 
-	bool operator == (const unsigned char keyCode) const;
-	bool operator != (const unsigned char keyCode) const;
+	bool operator == (wchar_t keyCode) const;
+	bool operator != (wchar_t keyCode) const;
 };
