@@ -50,18 +50,21 @@ const Letter Console::Keyboard::SPACE(32);
 const Letter Console::Keyboard::ENTER(13);
 #pragma endregion
 
-void Console::SetCursorPosition(COORD cursorCoord)
+bool Console::SetCursorPosition(COORD cursorCoord)
 {
-	_currentCursorCoord = cursorCoord;
+	// if cursor outside of console frame;
+	if (GetConsoleSize() < cursorCoord)
+		return false;
 
+	_currentCursorCoord = cursorCoord;
 	SetConsoleCursorPosition(_handleOut, _currentCursorCoord);
+
+	return true;
 }
 
-void Console::SetCursorPosition(const short coordX, const short coordY)
+bool Console::SetCursorPosition(const short coordX, const short coordY)
 {
-	_currentCursorCoord = { coordX, coordY };
-
-	SetConsoleCursorPosition(_handleOut, _currentCursorCoord);
+	return SetCursorPosition(COORD{ coordX, coordY });
 }
 
 COORD Console::GetCursorPosition(void)
@@ -76,6 +79,7 @@ COORD Console::GetCursorPosition(void)
 
 Size Console::GetConsoleSize(void)
 {
+	throw std::exception("Something");
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 
 	// try to get screen buffer info
@@ -134,3 +138,75 @@ wchar_t Console::GetPressedKey(void)
 		return pressedKey;
 }
 
+void Console::PutChar(wchar_t character)
+{
+	_putwch(character);
+}
+
+bool Console::PutChar(const wchar_t character, const COORD& charCood)
+{
+	auto oldCoord = GetCursorPosition();
+	// if coord outside of frame;
+	if (!SetCursorPosition(charCood))
+		return false;
+
+	PutChar(character);
+	SetCursorPosition(oldCoord);
+
+	return true;
+}
+
+bool Console::PutChar(const wchar_t character, const short coordX, const short coordY)
+{
+	return PutChar(character, COORD{ coordX, coordY });
+}
+
+// check if our coord inside some size;
+bool operator<(COORD first, Size other)
+{
+	return first.X < other.width &&
+		first.Y < other.height;
+}
+
+// check if coord outside of size;
+bool operator<(Size first, COORD other)
+{
+	return first.width < other.X ||
+		first.height < other.Y;
+}
+
+bool operator>(COORD first, Size other)
+{
+	return other < first;
+}
+
+bool operator>(Size first, COORD other)
+{
+	return other < first;
+}
+
+// check if some coord inside or in border of
+//	some size;
+bool operator<=(COORD first, Size other)
+{
+	return first.X <= other.width &&
+		first.Y <= other.height;
+}
+
+// check if some coord outside or in border of 
+//	some size;
+bool operator<=(Size first, COORD other)
+{
+	return first.width <= other.X ||
+		first.height <= other.Y;
+}
+
+bool operator>=(COORD first, Size other)
+{
+	return other <= first;
+}
+
+bool operator>=(Size first, COORD other)
+{
+	return other <= first;
+}

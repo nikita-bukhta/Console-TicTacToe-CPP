@@ -59,11 +59,17 @@ public:
 	// set cursor position in console;
 	//
 	// cursorCoord - where you want to place your cursor;
-	static void SetCursorPosition(COORD cursorCoord);
+	//
+	// return true if everything is ok;
+	// return false if COORD outside of game frame;
+	static bool SetCursorPosition(COORD cursorCoord);
 	// set cursor position in console;
 	//
 	// coordX && coordY - where you want to place your cursor;
-	static void SetCursorPosition(const short coordX, const short coordY);
+	//
+	// return true if everything is ok;
+	// return false if COORD outside of game frame;
+	static bool SetCursorPosition(const short coordX, const short coordY);
 
 	static COORD GetCursorPosition(void);
 
@@ -82,6 +88,38 @@ public:
 
 	// return key you pressed key;
 	static wchar_t GetPressedKey(void);
+
+	// putchar there where is your cursor;
+	//
+	// character - what you want to put;
+	static void PutChar(wchar_t character);
+
+	// put char in indicated coordinates;
+	// 
+	// character - what you want to put;
+	// charCoord - where you want to place your coord;
+	// 
+	// return true if everything is ok;
+	// return false if COORD outside of game frame;
+	static bool PutChar(const wchar_t character, const COORD& charCood);
+	// put char in indicated coordinates;
+	// 
+	// character - what you want to put;
+	// coordX, coordY - where you want to place your coord;
+	// 
+	// return true if everything is ok;
+	// return false if COORD outside of game frame;
+	static bool PutChar(const wchar_t character, const short coordX, const short coordY);
 };
+
+bool operator < (COORD first, Size other);
+bool operator < (Size first, COORD other);
+bool operator > (COORD first, Size other);
+bool operator > (Size first, COORD other);
+
+bool operator <= (COORD first, Size other);
+bool operator <= (Size first, COORD other);
+bool operator >= (COORD first, Size other);
+bool operator >= (Size first, COORD other);
 
 #endif CONSOLE_H

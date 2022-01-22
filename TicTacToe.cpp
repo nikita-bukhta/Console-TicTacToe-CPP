@@ -15,27 +15,23 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 	if (player == nullptr)
 		return false;
 
-	COORD currentCursorPosition = Console::GetCursorPosition();
-	Size gameFrameSize = _gameFrame.GetFrameSize();
-	// distance between centre of two cells = lenght of side of cell
-	// + 1 to calculate the frame;
-	Size step = _gameFrame.GetCellSize() + 1;
-
-	while (true)
+	// if key was pushed;
+	if (_kbhit())
 	{
-		wchar_t pressedKey = Console::ToUpperCase(Console::GetPressedKey()); // pressed key
-		if (pressedKey == 0)
-			continue;
+		COORD currentCursorPosition = Console::GetCursorPosition();
+		Size gameFrameSize = _gameFrame.GetFrameSize();
+		// distance between centre of two cells = lenght of side of cell
+		// + 1 to calculate the frame;
+		Size step = _gameFrame.GetCellSize() + 1;
+
+		wchar_t pressedKey = Console::GetPressedKey(); // pressed key
 		// move RIGHT;
-		else if (Console::Keyboard::D == pressedKey || 
+		if (Console::Keyboard::D == pressedKey || 
 			Console::Keyboard::ARROW_RIGHT == pressedKey)
 		{
 			// check the right border;
 			if ((currentCursorPosition.X + step.width) <= (_startCoordForGameFrame.X + gameFrameSize.width))
-			{
-				currentCursorPosition.X += step.width;
-				Console::SetCursorPosition(currentCursorPosition);
-			}
+				ChoosePlayingCell(++_currentCellNumber);	// move cursor right
 		}
 		// move DOWN;
 		else if (Console::Keyboard::S == pressedKey ||
@@ -44,8 +40,10 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 			// check the buttom border;
 			if ((currentCursorPosition.Y + step.height) <= (_startCoordForGameFrame.Y + gameFrameSize.height))
 			{
-				currentCursorPosition.Y += step.height;
-				Console::SetCursorPosition(currentCursorPosition);
+				// Move cell number to the next row (down).
+				//	Number that lower by rows must be greater by count of cells in row;
+				_currentCellNumber += _gameFrame.GetCellsCountInRow();
+				ChoosePlayingCell(_currentCellNumber);
 			}
 		}
 		// move LEFT
@@ -54,10 +52,7 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 		{
 			// check the left border;
 			if ((currentCursorPosition.X - step.width) >= _startCoordForGameFrame.X)
-			{
-				currentCursorPosition.X -= step.width;
-				Console::SetCursorPosition(currentCursorPosition);
-			}
+				ChoosePlayingCell(--_currentCellNumber);	// move cursor left;
 		}
 		// move UP
 		else if (Console::Keyboard::W == pressedKey ||
@@ -66,8 +61,23 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 			// check the top border;
 			if ((currentCursorPosition.Y - step.height) >= _startCoordForGameFrame.Y)
 			{
-				currentCursorPosition.Y -= step.height;
-				Console::SetCursorPosition(currentCursorPosition);
+				// Move cell number to the past row (up).
+				//	Number that higher by rows must be lower by count of cells in row;
+				_currentCellNumber -= _gameFrame.GetCellsCountInRow();
+				ChoosePlayingCell(_currentCellNumber);
+			}
+		}
+		else if (Console::Keyboard::SPACE == pressedKey)
+		{
+			COORD currentCellIndex = {
+				_currentCellNumber % 3,
+				_currentCellNumber / 3
+			};
+			if (_calculationField[currentCellIndex.Y][currentCellIndex.X] == Player::PlayingChar::Empty)
+			{
+				Console::PutChar(wchar_t(player->GetPlayingChar()));
+				_calculationField[currentCellIndex.Y][currentCellIndex.X] = player->GetPlayingChar();
+				++_playerTurnsCount;
 			}
 		}
 	}
@@ -75,11 +85,35 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 	return true;
 }
 
+void TicTacToe::ChoosePlayingCell(short cellNumber)
+{
+	// row and column where is cell;
+	short row = cellNumber / _gameFrame.GetCellsCountInColumn();
+	short column = cellNumber % _gameFrame.GetCellsCountInRow();
+
+	// first get centre of the first cell, than get the cell
+	//	starting from the first cell;
+	Console::SetCursorPosition(
+		_startCoordForGameFrame.X + (_cellSize.width + 1) / 2 + (column * _cellSize.width) + column,
+		_startCoordForGameFrame.Y + (_cellSize.height + 1) / 2 + (row * _cellSize.height) + row
+	);
+}
+
 TicTacToe::TicTacToe(void)
 {
 	_cellSize = Config::gameFrameCellStandartSize;
 	_gameFrame = GameFrame(_cellSize);
-	_calculationField = { Player::PlayingChar::Empty };
+	_currentCellNumber = 0;
+
+	_rowsCount = _gameFrame.GetCellsCountInRow();
+	_columnsCount = _gameFrame.GetCellsCountInColumn();
+	_calculationField = new Player::PlayingChar*[_rowsCount];
+	for (short row = 0; row < _rowsCount; ++row)
+	{
+		_calculationField[row] = new Player::PlayingChar[_columnsCount];
+		for (short column = 0; column < _columnsCount; ++column)
+			_calculationField[row][column] = Player::PlayingChar::Empty;
+	}
 
 	player1.SetPlayingChar(Player::PlayingChar::X);
 	player2.SetPlayingChar(Player::PlayingChar::Y);
@@ -87,48 +121,70 @@ TicTacToe::TicTacToe(void)
 	_playerTurnsCount = short();
 }
 
+bool TicTacToe::CheckDrawingPosition(void)
+{
+	// for check changing console size;
+	static Size pastConsoleSize;
+	static Size currentConsoleSize;
+ 
+	currentConsoleSize = Console::GetConsoleSize();
+
+
+	// if console size has been changed
+	//	redraw all;
+	if (pastConsoleSize != currentConsoleSize)
+	{
+		Size gameFrameSize = _gameFrame.GetFrameSize();
+		// start coord for drawing gameFrame;
+		Size* result = new Size((currentConsoleSize - gameFrameSize) / 2);
+		_startCoordForGameFrame = { result->width, result->height };
+
+		delete result;
+
+		// redrawing;
+		Console::ClearConsole();
+		_gameFrame.DrawFrame(_startCoordForGameFrame);
+
+		// set current size;
+		pastConsoleSize = currentConsoleSize;
+	}
+
+	return 1;
+}
+
+TicTacToe::~TicTacToe(void)
+{
+	if (_calculationField != nullptr)
+	{
+		for (short row = 0; row < _rowsCount; ++row)
+		{
+			delete[] _calculationField[row];
+			_calculationField[row] = nullptr;
+		}
+
+		_calculationField = nullptr;
+	}
+}
+
 bool TicTacToe::StartGame(void)
 {
 	// Set console title;
 	SetConsoleTitleW(L"Tic Tac Toe by Nikita Bukhta");
 
-	Size pastConsoleSize = Size();
-	Size currentConsoleSize;
-
 	while (true)
 	{
 		// throw exception, if we can't get console size
 		//	and exit from this method in case of failture;
-#pragma region Changing drawing position
+		
 		try
 		{
-			currentConsoleSize = Console::GetConsoleSize();
+			CheckDrawingPosition();
 		}
 		catch (std::exception& error)
 		{
 			std::cerr << error.what() << std::endl;
-			return 1;
+			return 0;
 		}
-
-		// if console size has been changed
-		//	redraw all;
-		if (pastConsoleSize != currentConsoleSize)
-		{
-			Size gameFrameSize = _gameFrame.GetFrameSize();
-			// start coord for drawing gameFrame;
-			Size* result = new Size((currentConsoleSize - gameFrameSize) / 2);
-			_startCoordForGameFrame = { result->width, result->height };
-
-			delete result;
-
-			// redrawing;
-			Console::ClearConsole();
-			_gameFrame.DrawFrame(_startCoordForGameFrame);
-
-			// set current size;
-			pastConsoleSize = currentConsoleSize;
-		}
-#pragma endregion
 #pragma region PlayerTurn
 
 		// if first player must turn;
@@ -138,10 +194,11 @@ bool TicTacToe::StartGame(void)
 			currentPlayer = &player2;
 		
 		// Get centre of the first game cell;
-		Console::SetCursorPosition(
-			_startCoordForGameFrame.X + (_cellSize.width + 1) / 2,
-			_startCoordForGameFrame.Y + (_cellSize.height + 1) / 2
-		);
+		if (_currentCellNumber == 0)
+		{
+			ChoosePlayingCell(_currentCellNumber);
+			//_currentCellNumber = 0;
+		}
 		MakePlayerTurn(currentPlayer);
 #pragma endregion
 	}

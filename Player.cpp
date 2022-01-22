@@ -26,7 +26,7 @@ void Player::SetPlayingChar(PlayingChar playingChar)
 	_playingChar = playingChar;
 }
 
-Player::PlayingChar Player::GetPlayingChar(void)
+Player::PlayingChar Player::GetPlayingChar(void) const
 {
 	return _playingChar;
 }
@@ -36,7 +36,7 @@ void Player::SetName(std::wstring name)
 	_name = name;
 }
 
-std::wstring Player::GetName(void)
+std::wstring Player::GetName(void) const
 {
 	return _name;
 }
