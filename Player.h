@@ -10,7 +10,7 @@ public:
 	{
 		Empty = 0,
 		X = L'X',
-		Y = L'Y'
+		O = L'O'
 	};
 
 private:

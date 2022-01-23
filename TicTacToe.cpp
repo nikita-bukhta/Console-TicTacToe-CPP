@@ -7,7 +7,6 @@
 
 // TODO:
 //	1) Make method for different modes
-//	2) Make Bind for Space (make a turn)
 //
 
 bool TicTacToe::MakePlayerTurn(const Player* player)
@@ -70,19 +69,21 @@ bool TicTacToe::MakePlayerTurn(const Player* player)
 		else if (Console::Keyboard::SPACE == pressedKey)
 		{
 			COORD currentCellIndex = {
-				_currentCellNumber % 3,
-				_currentCellNumber / 3
+				_currentCellNumber % _gameFrame.GetCellsCountInRow(),
+				_currentCellNumber / _gameFrame.GetCellsCountInColumn()
 			};
 			if (_calculationField[currentCellIndex.Y][currentCellIndex.X] == Player::PlayingChar::Empty)
 			{
 				Console::PutChar(wchar_t(player->GetPlayingChar()));
 				_calculationField[currentCellIndex.Y][currentCellIndex.X] = player->GetPlayingChar();
 				++_playerTurnsCount;
+
+				return true;
 			}
 		}
 	}
 
-	return true;
+	return false;
 }
 
 void TicTacToe::ChoosePlayingCell(short cellNumber)
@@ -102,8 +103,10 @@ void TicTacToe::ChoosePlayingCell(short cellNumber)
 TicTacToe::TicTacToe(void)
 {
 	_cellSize = Config::gameFrameCellStandartSize;
-	_gameFrame = GameFrame(_cellSize);
+
+	_gameFrame = GameFrame(_cellSize, { 21, 21});
 	_currentCellNumber = 0;
+	_cellsNeedForWin = 3;
 
 	_rowsCount = _gameFrame.GetCellsCountInRow();
 	_columnsCount = _gameFrame.GetCellsCountInColumn();
@@ -116,7 +119,7 @@ TicTacToe::TicTacToe(void)
 	}
 
 	player1.SetPlayingChar(Player::PlayingChar::X);
-	player2.SetPlayingChar(Player::PlayingChar::Y);
+	player2.SetPlayingChar(Player::PlayingChar::O);
 
 	_playerTurnsCount = short();
 }
@@ -152,6 +155,104 @@ bool TicTacToe::CheckDrawingPosition(void)
 	return 1;
 }
 
+bool TicTacToe::CheckForWins(const Player* player, short row, short column)
+{
+	auto playingChar = player->GetPlayingChar();
+
+	short rowsCount = _gameFrame.GetCellsCountInRow();
+	short columnsCount = _gameFrame.GetCellsCountInColumn();
+	short cellsInRow = 0;
+
+	for (short row = 0; row < rowsCount; ++row)
+	{
+		for (short column = 0; column < columnsCount; ++column)
+		{
+			if (_calculationField[row][column] == playingChar)
+			{
+				++cellsInRow;
+				short pastRow = row;
+				short pastColumn = column;
+
+				// check if row is filled;
+				while (cellsInRow != _cellsNeedForWin && (columnsCount - column) >= (_cellsNeedForWin - cellsInRow))
+				{
+					// check if we are in range;
+					if (++column < columnsCount && _calculationField[row][column] == playingChar)
+					{
+						++cellsInRow;
+						continue;
+					}
+
+					row = pastRow;
+					column = pastColumn;
+					cellsInRow = 1;
+					break;
+				}
+				
+				// check if column filled;
+				while (cellsInRow != _cellsNeedForWin && (rowsCount - row) >= (_cellsNeedForWin - cellsInRow))
+				{
+					// check if we are in range;
+					if (++row < rowsCount && _calculationField[row][column] == playingChar)
+					{
+						++cellsInRow;
+						continue;
+					}
+
+					row = pastRow;
+					column = pastColumn;
+					cellsInRow = 1;
+					break;
+				}
+				
+				// check if diagonal filled;
+				while (cellsInRow != _cellsNeedForWin && (rowsCount - row) >= (_cellsNeedForWin - cellsInRow) &&
+					(columnsCount - column) >= (_cellsNeedForWin - cellsInRow))
+				{
+					// check if we are in range;
+					if (++row < rowsCount && ++column < columnsCount && _calculationField[row][column] == playingChar)
+					{
+						++cellsInRow;
+						continue;
+					}
+
+					row = pastRow;
+					column = pastColumn;
+					cellsInRow = 1;
+					break;
+				}
+
+				// check if another diagonal filled;
+				while (cellsInRow != _cellsNeedForWin && (column - (_cellsNeedForWin - cellsInRow)) >= 0 &&
+					(rowsCount - row) >= (_cellsNeedForWin - cellsInRow))
+				{
+					// check if we are in range;
+					if (++row < rowsCount && --column >= 0 && _calculationField[row][column] == playingChar)
+					{
+						++cellsInRow;
+						continue;
+					}
+
+					row = pastRow;
+					column = pastColumn;
+					cellsInRow = 1;
+					break;
+				}
+
+				if (cellsInRow >= _cellsNeedForWin)
+					return true;
+			}
+			else
+				cellsInRow = 0;
+		}
+	}
+
+	if (cellsInRow == _cellsNeedForWin)
+		return true;
+
+	return false;
+}
+
 TicTacToe::~TicTacToe(void)
 {
 	if (_calculationField != nullptr)
@@ -173,9 +274,6 @@ bool TicTacToe::StartGame(void)
 
 	while (true)
 	{
-		// throw exception, if we can't get console size
-		//	and exit from this method in case of failture;
-		
 		try
 		{
 			CheckDrawingPosition();
@@ -183,6 +281,7 @@ bool TicTacToe::StartGame(void)
 		catch (std::exception& error)
 		{
 			std::cerr << error.what() << std::endl;
+			std::system("pause");	// stop console to see error;
 			return 0;
 		}
 #pragma region PlayerTurn
@@ -194,12 +293,20 @@ bool TicTacToe::StartGame(void)
 			currentPlayer = &player2;
 		
 		// Get centre of the first game cell;
+		// crutch;
 		if (_currentCellNumber == 0)
-		{
 			ChoosePlayingCell(_currentCellNumber);
-			//_currentCellNumber = 0;
+
+		if (MakePlayerTurn(currentPlayer))
+		{
+			if (CheckForWins(currentPlayer))
+			{
+				Size consoleSize = Console::GetConsoleSize();
+				Console::SetCursorPosition(0, consoleSize.height - 3);
+				std::wcout << currentPlayer->GetName() << L" victory!" << std::endl;
+				break;
+			}
 		}
-		MakePlayerTurn(currentPlayer);
 #pragma endregion
 	}
 

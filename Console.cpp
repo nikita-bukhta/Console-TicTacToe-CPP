@@ -5,8 +5,6 @@
 #include <conio.h>	// _getch()
 
 // TODO:
-//	1) Make getting russian character WITHOUT
-//		destruction of game frame ( I am shocked by that too :( );
 //	2) Make method to increase the font size;
 //
 
@@ -79,7 +77,6 @@ COORD Console::GetCursorPosition(void)
 
 Size Console::GetConsoleSize(void)
 {
-	throw std::exception("Something");
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 
 	// try to get screen buffer info

@@ -14,6 +14,7 @@ private:
 	short _currentCellNumber;
 	short _rowsCount;
 	short _columnsCount;
+	short _cellsNeedForWin;
 
 	COORD _startCoordForGameFrame;
 	Size _cellSize;
@@ -37,6 +38,10 @@ private:
 
 	// Check if the window size has changed;
 	bool CheckDrawingPosition(void);
+
+	// return true if player won;
+	// return false if player didn't win;
+	bool CheckForWins(const Player* player, short row = 0, short column = 0);
 public:
 	TicTacToe(void);
 

@@ -13,9 +13,9 @@ public:
 	GameFrame();
 	GameFrame(Size cellSize);
 	GameFrame(short cellWidth, short cellHeight) : GameFrame(Size{ cellWidth, cellHeight }) {}
-	GameFrame(Size gameFrameSize, Size cellSize);
-	GameFrame(short gameFrameWidth, short gameFrameHeight, short cellWidth, short cellHeight) :
-		GameFrame(Size{ gameFrameWidth, gameFrameHeight }, Size{ cellWidth, cellHeight }) {}
+	GameFrame(Size cellSize, Size gameFrameSize);
+	GameFrame(short cellWidth, short cellHeight, short gameFrameWidth, short gameFrameHeight) :
+		GameFrame(Size{ cellWidth, cellHeight }, Size{ gameFrameWidth, gameFrameHeight }) {}
 
 	// return count of cells in each row;
 	//	but count of cells only of 1 row;

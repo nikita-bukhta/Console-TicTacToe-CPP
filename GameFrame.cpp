@@ -79,7 +79,7 @@ GameFrame::GameFrame(Size cellSize) : Frame(Config::gameFrameStandartSize.width,
 	MakeGameFrame();
 }
 
-GameFrame::GameFrame(Size gameFrameSize, Size cellSize) :  Frame(gameFrameSize)
+GameFrame::GameFrame(Size cellSize, Size gameFrameSize) :  Frame(gameFrameSize)
 {
 	_cellSize = cellSize;
 	MakeGameFrame();
