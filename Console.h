@@ -3,7 +3,7 @@
 #define CONSOLE_H
 
 #include "Config.h"
-#include "Letter.h"
+#include "Button.h"
 
 #include <Windows.h>
 #include <ostream>
@@ -15,38 +15,38 @@ public:
 	class Keyboard	// Bind in upper case;
 	{
 	public:
-		static const Letter A;	// Bind in upper case;
-		static const Letter B;	// Bind in upper case;
-		static const Letter C;	// Bind in upper case;
-		static const Letter D;	// Bind in upper case;
-		static const Letter E;	// Bind in upper case;
-		static const Letter F;	// Bind in upper case;
-		static const Letter G;	// Bind in upper case;
-		static const Letter H;	// Bind in upper case;
-		static const Letter I;	// Bind in upper case;
-		static const Letter J;	// Bind in upper case;
-		static const Letter K;	// Bind in upper case;
-		static const Letter L;	// Bind in upper case;
-		static const Letter M;	// Bind in upper case;
-		static const Letter N;	// Bind in upper case;
-		static const Letter O;	// Bind in upper case;
-		static const Letter P;	// Bind in upper case;
-		static const Letter Q;	// Bind in upper case;
-		static const Letter R;	// Bind in upper case;
-		static const Letter S;	// Bind in upper case;
-		static const Letter T;	// Bind in upper case;
-		static const Letter U;	// Bind in upper case;
-		static const Letter V;	// Bind in upper case;
-		static const Letter W;	// Bind in upper case;
-		static const Letter X;	// Bind in upper case;
-		static const Letter Y;	// Bind in upper case;
-		static const Letter Z;	// Bind in upper case;
-		static const Letter ARROW_UP;
-		static const Letter ARROW_LEFT;
-		static const Letter ARROW_RIGHT;
-		static const Letter ARROW_DOWN;
-		static const Letter SPACE;
-		static const Letter ENTER;
+		static const Button A;	// Bind in upper case;
+		static const Button B;	// Bind in upper case;
+		static const Button C;	// Bind in upper case;
+		static const Button D;	// Bind in upper case;
+		static const Button E;	// Bind in upper case;
+		static const Button F;	// Bind in upper case;
+		static const Button G;	// Bind in upper case;
+		static const Button H;	// Bind in upper case;
+		static const Button I;	// Bind in upper case;
+		static const Button J;	// Bind in upper case;
+		static const Button K;	// Bind in upper case;
+		static const Button L;	// Bind in upper case;
+		static const Button M;	// Bind in upper case;
+		static const Button N;	// Bind in upper case;
+		static const Button O;	// Bind in upper case;
+		static const Button P;	// Bind in upper case;
+		static const Button Q;	// Bind in upper case;
+		static const Button R;	// Bind in upper case;
+		static const Button S;	// Bind in upper case;
+		static const Button T;	// Bind in upper case;
+		static const Button U;	// Bind in upper case;
+		static const Button V;	// Bind in upper case;
+		static const Button W;	// Bind in upper case;
+		static const Button X;	// Bind in upper case;
+		static const Button Y;	// Bind in upper case;
+		static const Button Z;	// Bind in upper case;
+		static const Button ARROW_UP;
+		static const Button ARROW_LEFT;
+		static const Button ARROW_RIGHT;
+		static const Button ARROW_DOWN;
+		static const Button SPACE;
+		static const Button ENTER;
 	};
 
 private:
@@ -106,7 +106,11 @@ public:
 	// 
 	// return true if everything is ok;
 	// return false if COORD outside of game frame;
-	static bool PutChar(const wchar_t character, const COORD& charCood);
+	static bool PutChar(const wchar_t character, const COORD& charCoord);
+
+	static void PutString(std::wstring& text);
+
+	static bool PutString(std::wstring& text, const COORD& startStringCoord);
 	// put char in indicated coordinates;
 	// 
 	// character - what you want to put;

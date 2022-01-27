@@ -6,7 +6,7 @@ class Player
 {
 public:
 	// players' playing figures;
-	static enum class PlayingChar : wchar_t
+	enum class PlayingChar : wchar_t
 	{
 		Empty = 0,
 		X = L'X',

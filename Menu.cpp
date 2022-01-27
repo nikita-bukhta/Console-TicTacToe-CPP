@@ -9,8 +9,15 @@ std::vector<std::wstring> Menu::_startOptions = {
 
 void Menu::ShowMenu(void)
 {
+	auto consoleSize = Console::GetConsoleSize();
+
+	short startOptionNumber = 0;
 	for (auto option : _startOptions)
 	{
-		//std::wcout << option << std::endl;
+		Console::PutString(option, COORD{ short((consoleSize.width - option.size()) / 2),
+			short((consoleSize.height / 2 - startOptionNumber)) 
+			});
+
+		startOptionNumber += 2;
 	}
 }

@@ -16,8 +16,6 @@ private:
 	static std::vector<std::wstring> _startOptions;
 
 public:
-	Menu(void);
-
 	static void ShowMenu(void);
 };
 

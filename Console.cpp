@@ -13,38 +13,38 @@ const HANDLE Console::_handleOut = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Console::_currentCursorCoord = COORD();
 
 #pragma region Keybord Keys
-const Letter Console::Keyboard::A(L'A', L'Ô');
-const Letter Console::Keyboard::B(L'B', L'È');
-const Letter Console::Keyboard::C(L'C', L'Ñ');
-const Letter Console::Keyboard::D(L'D', L'Â');
-const Letter Console::Keyboard::E(L'E', L'Ó');
-const Letter Console::Keyboard::F(L'F', L'À');
-const Letter Console::Keyboard::G(L'G', L'Ï');
-const Letter Console::Keyboard::H(L'H', L'Ð');
-const Letter Console::Keyboard::I(L'I', L'Ø');
-const Letter Console::Keyboard::J(L'J', L'Î');
-const Letter Console::Keyboard::K(L'K', L'Ë');
-const Letter Console::Keyboard::L(L'L', L'Ä');
-const Letter Console::Keyboard::M(L'M', L'Ü');
-const Letter Console::Keyboard::N(L'N', L'Ò');
-const Letter Console::Keyboard::O(L'O', L'Ù');
-const Letter Console::Keyboard::P(L'P', L'Ç');
-const Letter Console::Keyboard::Q(L'Q', L'É');
-const Letter Console::Keyboard::R(L'R', L'Ê');
-const Letter Console::Keyboard::S(L'S', L'Û');
-const Letter Console::Keyboard::T(L'T', L'Å');
-const Letter Console::Keyboard::U(L'U', L'Ã');
-const Letter Console::Keyboard::V(L'V', L'Ì');
-const Letter Console::Keyboard::W(L'W', L'Ö');
-const Letter Console::Keyboard::X(L'X', L'×');
-const Letter Console::Keyboard::Y(L'Y', L'Í');
-const Letter Console::Keyboard::Z(L'Z', L'ß');
-const Letter Console::Keyboard::ARROW_UP(72);
-const Letter Console::Keyboard::ARROW_LEFT(75);
-const Letter Console::Keyboard::ARROW_RIGHT(77);
-const Letter Console::Keyboard::ARROW_DOWN(80);
-const Letter Console::Keyboard::SPACE(32);
-const Letter Console::Keyboard::ENTER(13);
+const Button Console::Keyboard::A(L'A', L'Ô');
+const Button Console::Keyboard::B(L'B', L'È');
+const Button Console::Keyboard::C(L'C', L'Ñ');
+const Button Console::Keyboard::D(L'D', L'Â');
+const Button Console::Keyboard::E(L'E', L'Ó');
+const Button Console::Keyboard::F(L'F', L'À');
+const Button Console::Keyboard::G(L'G', L'Ï');
+const Button Console::Keyboard::H(L'H', L'Ð');
+const Button Console::Keyboard::I(L'I', L'Ø');
+const Button Console::Keyboard::J(L'J', L'Î');
+const Button Console::Keyboard::K(L'K', L'Ë');
+const Button Console::Keyboard::L(L'L', L'Ä');
+const Button Console::Keyboard::M(L'M', L'Ü');
+const Button Console::Keyboard::N(L'N', L'Ò');
+const Button Console::Keyboard::O(L'O', L'Ù');
+const Button Console::Keyboard::P(L'P', L'Ç');
+const Button Console::Keyboard::Q(L'Q', L'É');
+const Button Console::Keyboard::R(L'R', L'Ê');
+const Button Console::Keyboard::S(L'S', L'Û');
+const Button Console::Keyboard::T(L'T', L'Å');
+const Button Console::Keyboard::U(L'U', L'Ã');
+const Button Console::Keyboard::V(L'V', L'Ì');
+const Button Console::Keyboard::W(L'W', L'Ö');
+const Button Console::Keyboard::X(L'X', L'×');
+const Button Console::Keyboard::Y(L'Y', L'Í');
+const Button Console::Keyboard::Z(L'Z', L'ß');
+const Button Console::Keyboard::ARROW_UP(72);
+const Button Console::Keyboard::ARROW_LEFT(75);
+const Button Console::Keyboard::ARROW_RIGHT(77);
+const Button Console::Keyboard::ARROW_DOWN(80);
+const Button Console::Keyboard::SPACE(32);
+const Button Console::Keyboard::ENTER(13);
 #pragma endregion
 
 void Console::GetScreenBufferInfo(CONSOLE_SCREEN_BUFFER_INFO& screenBuf)
@@ -149,14 +149,33 @@ void Console::PutChar(wchar_t character)
 	_putwch(character);
 }
 
-bool Console::PutChar(const wchar_t character, const COORD& charCood)
+bool Console::PutChar(const wchar_t character, const COORD& charCoord)
 {
 	auto oldCoord = GetCursorPosition();
 	// if coord outside of frame;
-	if (!SetCursorPosition(charCood))
+	if (!SetCursorPosition(charCoord))
 		return false;
 
 	PutChar(character);
+	SetCursorPosition(oldCoord);
+
+	return true;
+}
+
+void Console::PutString(std::wstring& text)
+{
+	for (auto& c : text)
+		PutChar(c);
+}
+
+bool Console::PutString(std::wstring& text, const COORD& startStringCoord)
+{
+	auto oldCoord = GetCursorPosition();
+	// if coord outside of frame;
+	if (!SetCursorPosition(startStringCoord))
+		return false;
+
+	PutString(text);
 	SetCursorPosition(oldCoord);
 
 	return true;

@@ -1,13 +1,12 @@
 ﻿#include "Title.h"
 
-/*
-const Title::Letter _lA = {
+const Title::Letter _lA({
 	L"     ",
 	L"     ",
 	L"  ▃  ",
 	L" ▟▃▙ ",
 	L"▟   ▙"
-};
+	});
 
 Title::Title(std::wstring title)
 {
@@ -29,7 +28,7 @@ Title::Title(std::wstring title)
 		case L'o':
 			_title.push_back(_lO);
 			break;
-		case L'T':
+		case L't':
 			_title.push_back(_uT);
 			break;
 		}
@@ -55,11 +54,10 @@ std::wostream& operator<<(std::wostream& wout, Title::Letter object)
 	return wout;
 }
 
-Title::Letter::Letter(std::wstring* bigLetter)
+Title::Letter::Letter(std::wstring* bigletter)
 {
 	for (int i = 0; i < 5; ++i)
 	{
-		//_letter[i] = bigLetter[i];
+		//_letter[i] = bigletter[i];
 	}
 }
-*/
