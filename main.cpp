@@ -1,12 +1,13 @@
 #include "TicTacToe.h"
-#include "Console.h"
+#include "Title.h"
 
-#include <conio.h>
-#include <iostream>
-#include <string>
+#include "Menu.h"
 
 int main(int argc, char** argv)
 {
+	//while (true)
+		//Console::GetConsoleSize();
+
 	TicTacToe game;
 	return game.StartGame();
 }

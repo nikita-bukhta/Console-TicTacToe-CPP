@@ -128,10 +128,9 @@ bool TicTacToe::CheckDrawingPosition(void)
 {
 	// for check changing console size;
 	static Size pastConsoleSize;
-	static Size currentConsoleSize;
+	static Size currentConsoleSize;;
  
 	currentConsoleSize = Console::GetConsoleSize();
-
 
 	// if console size has been changed
 	//	redraw all;
@@ -271,12 +270,13 @@ bool TicTacToe::StartGame(void)
 {
 	// Set console title;
 	SetConsoleTitleW(L"Tic Tac Toe by Nikita Bukhta");
-
+	Console::SetFullScreen(false);
 	while (true)
 	{
 		try
 		{
 			CheckDrawingPosition();
+			Console::UpdateConsoleFont();
 		}
 		catch (std::exception& error)
 		{

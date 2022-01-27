@@ -11,7 +11,6 @@
 // static variables;
 const HANDLE Console::_handleOut = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD Console::_currentCursorCoord = COORD();
-Size Console::_consoleSize = Size();
 
 #pragma region Keybord Keys
 const Letter Console::Keyboard::A(L'A', L'Ô');
@@ -48,6 +47,25 @@ const Letter Console::Keyboard::SPACE(32);
 const Letter Console::Keyboard::ENTER(13);
 #pragma endregion
 
+void Console::GetScreenBufferInfo(CONSOLE_SCREEN_BUFFER_INFO& screenBuf)
+{
+	if (!GetConsoleScreenBufferInfo(_handleOut, &screenBuf))
+		throw std::exception("Can't get screen buffer info! Error" + GetLastError());
+
+}
+
+void Console::SetScreenBufferInfo(CONSOLE_SCREEN_BUFFER_INFO& screenBuf)
+{
+}
+
+CONSOLE_SCREEN_BUFFER_INFO Console::GetScreenBufferInfo()
+{
+	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	GetScreenBufferInfo(consoleInfo);
+
+	return consoleInfo;
+}
+
 bool Console::SetCursorPosition(COORD cursorCoord)
 {
 	// if cursor outside of console frame;
@@ -78,23 +96,14 @@ COORD Console::GetCursorPosition(void)
 Size Console::GetConsoleSize(void)
 {
 	CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
+	GetScreenBufferInfo(consoleInfo);
 
-	// try to get screen buffer info
-	if (GetConsoleScreenBufferInfo(_handleOut, &consoleInfo))
-	{
-		_consoleSize = {
+	Size consoleSize = {
 		short(consoleInfo.srWindow.Right - consoleInfo.srWindow.Left + 1),
 		short(consoleInfo.srWindow.Bottom - consoleInfo.srWindow.Top + 1)
-		};
-	}
-	else
-	{
-		_consoleSize = { 0, 0 };
-		throw "Error: " + std::to_string(GetLastError()) +
-			"try to find it on the net!";
-	}
+	};
 
-	return _consoleSize;
+	return consoleSize;
 }
 
 void Console::ClearConsole(void)
@@ -156,6 +165,41 @@ bool Console::PutChar(const wchar_t character, const COORD& charCood)
 bool Console::PutChar(const wchar_t character, const short coordX, const short coordY)
 {
 	return PutChar(character, COORD{ coordX, coordY });
+}
+
+void Console::UpdateConsoleFont(void)
+{
+	static auto standartConsoleSize = GetConsoleSize();
+	static auto pastConsoleSize = standartConsoleSize;
+	auto currentConsoleSize = GetConsoleSize();
+
+	if (pastConsoleSize == currentConsoleSize)
+		return;
+
+	CONSOLE_FONT_INFOEX font = { sizeof(font) };
+
+	if (!GetCurrentConsoleFontEx(_handleOut, false, &font))
+		throw std::exception("Error with getting font info EX. Error " + GetLastError());
+
+	static auto standartFont = font;
+	font.dwFontSize = {
+		//0,
+		short(float(currentConsoleSize.width) / standartConsoleSize.width * font.dwFontSize.X),
+		short(float(currentConsoleSize.height) / standartConsoleSize.height * font.dwFontSize.Y),
+	};
+
+	if (!SetCurrentConsoleFontEx(_handleOut, false, &font))
+		throw std::exception("Error with setting console font. Error " + GetLastError());
+
+	pastConsoleSize = currentConsoleSize;
+}
+
+void Console::SetFullScreen(bool fullScreen)
+{
+	system("mode con COLS=700");
+	fullScreen ?
+		SendMessage(GetConsoleWindow(), WM_SYSKEYDOWN, VK_RETURN, 0x20000000) :
+		ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 }
 
 // check if our coord inside some size;

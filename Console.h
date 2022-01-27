@@ -53,7 +53,12 @@ private:
 
 	static const HANDLE _handleOut;		// our console;
 	static COORD _currentCursorCoord;	// where is our cursor;
-	static Size _consoleSize;
+
+	static void GetScreenBufferInfo(CONSOLE_SCREEN_BUFFER_INFO& screenBuf);
+
+	static void SetScreenBufferInfo(CONSOLE_SCREEN_BUFFER_INFO& screenBuf);
+
+	static CONSOLE_SCREEN_BUFFER_INFO GetScreenBufferInfo();
 
 public:
 	// set cursor position in console;
@@ -110,6 +115,10 @@ public:
 	// return true if everything is ok;
 	// return false if COORD outside of game frame;
 	static bool PutChar(const wchar_t character, const short coordX, const short coordY);
+
+	static void UpdateConsoleFont(void);
+	
+	static void SetFullScreen(bool fullScreen);
 };
 
 bool operator < (COORD first, Size other);
